@@ -1,0 +1,30 @@
+<section>
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Topic</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (topic of topics; track topic.id) {
+        <tr>
+          <td>
+            {{ topic.id }}
+          </td>
+          <td>
+            {{ topic.title }}
+          </td>
+          <td>
+            {{ topic.description }}
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td>no topics yet</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>
