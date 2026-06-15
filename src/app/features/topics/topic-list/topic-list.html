@@ -1,7 +1,15 @@
 <section>
+  <div>
+    Count:&nbsp;{{ topics.length }}
+    @if (topics.length === 1) {
+      <span>topic</span>
+    } @else {
+      <span>topics</span>
+    }
+  </div>
   <table>
     <thead>
-      <tr>
+      <tr appHighlight="blue">
         <th>Id</th>
         <th>Topic</th>
         <th>Description</th>
@@ -9,15 +17,15 @@
     </thead>
     <tbody>
       @for (topic of topics; track topic.id) {
-        <tr>
+        <tr appHighlight>
           <td>
             {{ topic.id }}
           </td>
           <td>
-            {{ topic.title }}
+            {{ topic.title | titlecase }}
           </td>
           <td>
-            {{ topic.description }}
+            {{ topic.description | truncate: 30 }}
           </td>
         </tr>
       } @empty {
