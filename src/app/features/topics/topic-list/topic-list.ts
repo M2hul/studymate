@@ -1,12 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { TruncatePipe } from '../../../shared/pipes/truncate-pipe';
 import { Highlight } from '../../../shared/directives/highlight';
-interface Topic {
-  id: string;
-  title: string;
-  description: string;
-}
+import { Topic } from '../topic.model';
+import { TopicsStore } from '../../../core/topics/topics-store';
 
 @Component({
   selector: 'app-topic-list',
@@ -15,17 +12,12 @@ interface Topic {
   styleUrl: './topic-list.scss',
 })
 export class TopicList {
-  topics: Topic[] = [
-    { id: '1', title: 'First title', description: 'First description' },
-    { id: '2', title: 'Second title', description: 'Second description' },
-    { id: '3', title: 'Third title', description: 'Third description' },
-    { id: '4', title: 'fOrTh title', description: 'Third description' },
-    { id: '5', title: 'fIftH titlE', description: 'Third description' },
-    {
-      id: '6',
-      title: 'siXTh tITle',
-      description:
-        'Third descriptionfffffffffff dddddddddddddf fffffffffffffffffffffff ddddddddddddddddddddddd dddddddddddd w   wwwwwwwwwwwwwww         wwwwwwwS',
-    },
-  ];
+  protected store = inject(TopicsStore);
+  topics = this.store.topics;
+  count = this.store.count;
+
+  addTopic(event: Event, title: string, description: string) {
+    event.preventDefault();
+    this.store.add(title, description);
+  }
 }
