@@ -1,0 +1,16 @@
+<section>
+  @for (flashcard of flashcards(); track flashcard.topicsId) {
+    <ul>
+      <li>{{ flashcard.front }}</li>
+      <li>{{ flashcard.back | truncate: 30 }}</li>
+      <li>
+        <button onclick="cycleStatus($event, flashcard.topicsId)">{{ flashcard.status }}</button>
+        <button onclick="removeCard($event, flashcard.topicsId)">X</button>
+      </li>
+    </ul>
+  } @empty {
+    <ul>
+      <li>No card found</li>
+    </ul>
+  }
+</section>

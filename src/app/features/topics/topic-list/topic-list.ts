@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { TruncatePipe } from '../../../shared/pipes/truncate-pipe';
 import { Highlight } from '../../../shared/directives/highlight';
-import { Topic } from '../topic.model';
 import { TopicsStore } from '../../../core/topics/topics-store';
 
 @Component({
