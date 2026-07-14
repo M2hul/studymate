@@ -1,6 +1,6 @@
 export interface Flashcard {
   id: string;
-  topicsId: string;
+  topicId: string;
   front: string;
   back: string;
   status: 'not-seen' | 'learning' | 'known';

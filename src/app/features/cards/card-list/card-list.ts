@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CardsStore } from '../../../core/cards/cards-store';
 import { TruncatePipe } from '../../../shared/pipes/truncate-pipe';
+import { TopicsStore } from '../../../core/topics/topics-store';
 
 @Component({
   selector: 'app-card-list',
@@ -9,20 +10,25 @@ import { TruncatePipe } from '../../../shared/pipes/truncate-pipe';
   styleUrl: './card-list.scss',
 })
 export class CardList {
-  protected card = inject(CardsStore);
-  flashcards = this.card.flashcards;
-  count = this.card.count;
-  learningCount = this.card.learningCount;
-  knownCount = this.card.knownCount;
-  notSeenCount = this.card.notSeenCount;
+  protected cardsStore = inject(CardsStore);
+  protected topicsStore = inject(TopicsStore);
+  flashcards = this.cardsStore.flashcards;
+  count = this.cardsStore.count;
+  learningCount = this.cardsStore.learningCount;
+  knownCount = this.cardsStore.knownCount;
+  notSeenCount = this.cardsStore.notSeenCount;
+  topics = this.topicsStore.topics;
 
-  cycleStatus(event: Event, id: string) {
-    event.preventDefault();
-    this.card.cycleStatus(id);
+  cycleStatus(id: string) {
+    this.cardsStore.cycleStatus(id);
   }
 
-  removeCard(event: Event, id: string) {
+  removeCard(id: string) {
+    this.cardsStore.remove(id);
+  }
+
+  addCard(event: Event, topicId: string, front: string, back: string) {
     event.preventDefault();
-    this.card.remove(id);
+    this.cardsStore.add(topicId, front, back);
   }
 }

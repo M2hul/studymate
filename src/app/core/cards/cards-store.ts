@@ -21,15 +21,15 @@ export class CardsStore {
 
   add(topicId: string, front: string, back: string) {
     if (!topicId) return;
-    const topic: Flashcard = {
+    const card: Flashcard = {
       id: crypto.randomUUID(),
-      topicsId: '',
-      front: '',
-      back: '',
+      topicId: topicId,
+      front: front,
+      back: back,
       status: 'not-seen',
       updatedAt: Date.now(),
     };
-    this._flashcard.update((list) => [...list, topic]);
+    this._flashcard.update((list) => [...list, card]);
   }
 
   update(id: string, patch: Partial<Flashcard>) {

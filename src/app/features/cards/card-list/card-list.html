@@ -1,11 +1,37 @@
+<form
+  (submit)="
+    addCard($event, topicsSelect.value, frontInput.value, backInput.value);
+    frontInput.value = '';
+    backInput.value = ''
+  "
+>
+  <div>
+    <h2>Add New Card</h2>
+    <div>
+      Count: {{ count() }} | Learning: {{ learningCount() }} | Known: {{ knownCount() }} | Not Seen:
+      {{ notSeenCount() }}
+    </div>
+  </div>
+  <br />
+  <select #topicsSelect required>
+    @for (topic of topics(); track topic.id) {
+      <option [value]="topic.id">{{ topic.title }}</option>
+    } @empty {
+      <option value="" disabled>No topic found</option>
+    }
+  </select>
+  <input #frontInput placeholder="Front" required />
+  <input #backInput placeholder="Back" required />
+  <button [disabled]="!topics().length" type="submit">Add card</button>
+</form>
 <section>
-  @for (flashcard of flashcards(); track flashcard.topicsId) {
+  @for (flashcard of flashcards(); track flashcard.id) {
     <ul>
       <li>{{ flashcard.front }}</li>
       <li>{{ flashcard.back | truncate: 30 }}</li>
       <li>
-        <button onclick="cycleStatus($event, flashcard.topicsId)">{{ flashcard.status }}</button>
-        <button onclick="removeCard($event, flashcard.topicsId)">X</button>
+        <button (click)="cycleStatus(flashcard.id)">{{ flashcard.status }}</button>
+        <button (click)="removeCard(flashcard.id)">X</button>
       </li>
     </ul>
   } @empty {
