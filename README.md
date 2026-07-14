@@ -1,59 +1,74 @@
-# Studymate
+# StudyMate
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+A flashcard study app, built to work through the **Angular 12 → Angular 22 delta** hands-on.
 
-## Development server
+I've shipped Angular professionally since v12. It has changed enormously since then — standalone components, signals, the new control flow, zoneless change detection — so rather than read the changelog, I rebuilt from scratch on v22 and used each new primitive deliberately.
 
-To start a local development server, run:
+The goal is modern Angular idioms, not framework tourism: **no `NgModule`, no `*ngIf`, no `Zone.js`.**
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## What it demonstrates
 
-## Code scaffolding
+| Angular 22 feature | Where it's used |
+|---|---|
+| **Standalone components** | Every component. No `NgModule` anywhere — each declares its own `imports`. |
+| **Signals** (`signal`, `computed`) | `TopicsStore` / `CardsStore` hold state in signals; the counts (total, learning, known, not-seen) are `computed` and re-derive automatically. |
+| **`effect()`** | Reactive `localStorage` persistence — the effect *reads* the signal and *writes* to storage, so saving is a consequence of state changing rather than something every caller must remember to do. |
+| **New control flow** | `@for` with a required `track`, `@if` / `@else`, and `@empty` blocks for empty states. |
+| **`inject()`** | Used over constructor injection throughout. |
+| **`providedIn: 'root'` stores** | Two different components inject the same `TopicsStore` instance and see the same live data — components are views, stores are state. |
+| **Zoneless** | v22 ships without `zone.js` at all. Change detection is driven by signals and events. |
+| **Custom pipe & directive** | `TruncatePipe` (pure), `Highlight` attribute directive. |
+| **Router** | `routerLink` navigation, route config, `<router-outlet />`. |
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Features
 
-```bash
-ng generate component component-name
-```
+- Create topics; add flashcards against a topic
+- Cycle a card's status: `not-seen` → `learning` → `known`
+- Live per-status counts, derived through `computed` signals
+- Everything persists to `localStorage` and survives a reload
+- Honest empty states — the add-card form disables itself when no topics exist yet, instead of accepting a submit and silently doing nothing
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Stack
 
-```bash
-ng generate --help
-```
+Angular 22 · TypeScript 6 · Signals · SCSS · Vitest
 
-## Building
+## Running it
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Requires **Node 20.19+ / 22.12+ / 24+** — Angular 22 will not run on Node 18.
 
 ```bash
-ng test
+npm ci
+npm start          # → http://localhost:4200
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
 
 ```bash
-ng e2e
+npm run build      # production build
+npm test           # unit tests (Vitest)
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Project shape
 
-## Additional Resources
+```
+src/app/
+├── core/                    # state — injectable signal stores
+│   ├── topics/topics-store.ts
+│   └── cards/cards-store.ts
+├── features/                # views
+│   ├── topics/topic-list/
+│   └── cards/card-list/
+└── shared/
+    ├── pipes/truncate-pipe.ts
+    └── directives/highlight.ts
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+State lives in `core/`; `features/` only renders it. No component owns data that another component needs.
+
+## Status
+
+**Phase 1 in progress** — signals + `localStorage`, no RxJS, no backend.
+
+Next: per-topic detail route, status filtering via a derived `computed`, and edit/delete.
+
+Later phases: reactive forms, HTTP with functional interceptors, RxJS ↔ signal interop, lazy routes, NgRx SignalStore, `@defer`, SSR + hydration.
