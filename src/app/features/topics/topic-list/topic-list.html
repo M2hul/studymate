@@ -24,6 +24,8 @@
         <th>Id</th>
         <th>Topic</th>
         <th>Description</th>
+        <th>Edit</th>
+        <th>Remove</th>
       </tr>
     </thead>
     <tbody>
@@ -32,11 +34,38 @@
           <td>
             {{ topic.id }}
           </td>
+          @if (topicToEdit() === topic.id) {
+            <td>
+              <input
+                [ngModel]="editingTitle()"
+                (ngModelChange)="editingTitle.set($event)"
+                placeholder="Title"
+                required
+              />
+            </td>
+            <td>
+              <input
+                [ngModel]="editingDescription()"
+                (ngModelChange)="editingDescription.set($event)"
+                placeholder="Description"
+              />
+            </td>
+          } @else {
+            <td>{{ topic.title | titlecase }}</td>
+            <td>{{ topic.description | truncate: 30 }}</td>
+          }
           <td>
-            {{ topic.title | titlecase }}
+            @if (topicToEdit() === topic.id) {
+              <button (click)="saveTopic(topic.id, editingTitle(), editingDescription())">
+                Save
+              </button>
+              <button (click)="cancelEdit()">Cancel</button>
+            } @else {
+              <button (click)="editTopic(topic)">Edit</button>
+            }
           </td>
           <td>
-            {{ topic.description | truncate: 30 }}
+            <button (click)="removeTopic(topic.id)">X</button>
           </td>
         </tr>
       } @empty {
