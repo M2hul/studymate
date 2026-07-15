@@ -1,3 +1,17 @@
+<div>
+  <button type="button" (click)="setFilter('all')" [disabled]="filter() === 'all'">
+    All&nbsp;{{ count() }}
+  </button>
+  <button type="button" (click)="setFilter('not-seen')" [disabled]="filter() === 'not-seen'">
+    Not Seen&nbsp;{{ notSeenCount() }}
+  </button>
+  <button type="button" (click)="setFilter('learning')" [disabled]="filter() === 'learning'">
+    Learning&nbsp;{{ learningCount() }}
+  </button>
+  <button type="button" (click)="setFilter('known')" [disabled]="filter() === 'known'">
+    Known&nbsp;{{ knownCount() }}
+  </button>
+</div>
 <form
   (submit)="
     addCard($event, topicsSelect.value, frontInput.value, backInput.value);
@@ -7,10 +21,6 @@
 >
   <div>
     <h2>Add New Card</h2>
-    <div>
-      Count: {{ count() }} | Learning: {{ learningCount() }} | Known: {{ knownCount() }} | Not Seen:
-      {{ notSeenCount() }}
-    </div>
   </div>
   <br />
   <select #topicsSelect required>
@@ -25,7 +35,7 @@
   <button [disabled]="!topics().length" type="submit">Add card</button>
 </form>
 <section>
-  @for (flashcard of flashcards(); track flashcard.id) {
+  @for (flashcard of filteredCards(); track flashcard.id) {
     <ul>
       <li>{{ flashcard.front }}</li>
       <li>{{ flashcard.back | truncate: 30 }}</li>
