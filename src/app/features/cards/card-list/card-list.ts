@@ -3,11 +3,17 @@ import { CardsStore } from '../../../core/cards/cards-store';
 import { TruncatePipe } from '../../../shared/pipes/truncate-pipe';
 import { TopicsStore } from '../../../core/topics/topics-store';
 import { Flashcard } from '../card.model';
-import { FormsModule } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-card-list',
-  imports: [TruncatePipe, FormsModule],
+  imports: [TruncatePipe, FormsModule, ReactiveFormsModule],
   templateUrl: './card-list.html',
   styleUrl: './card-list.scss',
 })
@@ -26,6 +32,12 @@ export class CardList {
   notSeenCount = this.cardsStore.notSeenCount;
   topics = this.topicsStore.topics;
 
+  cardForm = new FormGroup({
+    topicId: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    front: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    back: new FormControl('', { nonNullable: true, validators: Validators.required }),
+  });
+
   filter = this._filter.asReadonly();
   filteredCards = computed(() => {
     const selectedFilter = this.filter();
@@ -42,11 +54,6 @@ export class CardList {
 
   removeCard(id: string) {
     this.cardsStore.remove(id);
-  }
-
-  addCard(event: Event, topicId: string, front: string, back: string) {
-    event.preventDefault();
-    this.cardsStore.add(topicId, front, back);
   }
 
   setFilter(filter: Flashcard['status'] | 'all') {
@@ -73,5 +80,11 @@ export class CardList {
     this.cardToEdit.set('');
     this.editingFront.set('');
     this.editingBack.set('');
+  }
+
+  onSubmit() {
+    const { topicId, front, back } = this.cardForm.getRawValue();
+    this.cardsStore.add(topicId, front, back);
+    this.cardForm.reset();
   }
 }
