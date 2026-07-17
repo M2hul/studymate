@@ -3,10 +3,11 @@ import { CardsStore } from '../../../core/cards/cards-store';
 import { TruncatePipe } from '../../../shared/pipes/truncate-pipe';
 import { TopicsStore } from '../../../core/topics/topics-store';
 import { Flashcard } from '../card.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-card-list',
-  imports: [TruncatePipe],
+  imports: [TruncatePipe, FormsModule],
   templateUrl: './card-list.html',
   styleUrl: './card-list.scss',
 })
@@ -15,6 +16,9 @@ export class CardList {
   protected topicsStore = inject(TopicsStore);
   private _filter = signal<Flashcard['status'] | 'all'>('all');
 
+  cardToEdit = signal<string>('');
+  editingFront = signal<string>('');
+  editingBack = signal<string>('');
   flashcards = this.cardsStore.flashcards;
   count = this.cardsStore.count;
   learningCount = this.cardsStore.learningCount;
@@ -47,5 +51,27 @@ export class CardList {
 
   setFilter(filter: Flashcard['status'] | 'all') {
     this._filter.set(filter);
+  }
+
+  editCard(flashcard: Flashcard) {
+    this.cardToEdit.set(flashcard.id);
+    this.editingFront.set(flashcard.front);
+    this.editingBack.set(flashcard.back);
+  }
+
+  saveCard(flashcard: Flashcard) {
+    this.cardsStore.update(flashcard.id, {
+      front: this.editingFront(),
+      back: this.editingBack(),
+    });
+    this.cardToEdit.set('');
+    this.editingFront.set('');
+    this.editingBack.set('');
+  }
+
+  cancelEdit() {
+    this.cardToEdit.set('');
+    this.editingFront.set('');
+    this.editingBack.set('');
   }
 }

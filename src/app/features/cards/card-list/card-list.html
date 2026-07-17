@@ -37,11 +37,25 @@
 <section>
   @for (flashcard of filteredCards(); track flashcard.id) {
     <ul>
-      <li>{{ flashcard.front }}</li>
-      <li>{{ flashcard.back | truncate: 30 }}</li>
+      @if (cardToEdit() === flashcard.id) {
+        <li><input [ngModel]="editingFront()" (ngModelChange)="editingFront.set($event)" /></li>
+        <li><input [ngModel]="editingBack()" (ngModelChange)="editingBack.set($event)" /></li>
+      } @else {
+        <li>{{ flashcard.front }}</li>
+        <li>{{ flashcard.back | truncate: 30 }}</li>
+      }
+
       <li>
         <button (click)="cycleStatus(flashcard.id)">{{ flashcard.status }}</button>
         <button (click)="removeCard(flashcard.id)">X</button>
+      </li>
+      <li>
+        @if (cardToEdit() === flashcard.id) {
+          <button (click)="saveCard(flashcard)">Save</button>
+          <button (click)="cancelEdit()">Cancel</button>
+        } @else {
+          <button (click)="editCard(flashcard)">Edit</button>
+        }
       </li>
     </ul>
   } @empty {
