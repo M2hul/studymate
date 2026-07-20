@@ -1,0 +1,35 @@
+{
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Angular Signals",
+      "description": "Reactive primitives and how change detection works in v22",
+      "createdAt": 1731000000000
+    },
+    {
+      "id": "t2",
+      "title": "RxJS",
+      "description": "Observables, operators, and async streams",
+      "createdAt": 1731000100000
+    }
+  ],
+  "cards": [
+    {
+      "id": "c1",
+      "topicId": "t1",
+      "front": "What does computed() give you that a method doesn't?",
+      "back": "Memoization + automatic dependency tracking; recomputes only when a dependency changes.",
+      "status": "known",
+      "updatedAt": 1731000200000
+    },
+    {
+      "id": "c2",
+      "topicId": "t2",
+      "front": "Observable vs Promise?",
+      "back": "Observables are lazy, multi-value, cancellable; Promises are eager, single-value.",
+      "status": "not-seen",
+      "updatedAt": 1731000300000
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

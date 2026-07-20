@@ -1,47 +1,43 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, computed, signal, inject } from '@angular/core';
 import { Topic } from '../../features/topics/topic.model';
-
-const STORAGE_KEY = 'studymate.topics';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class TopicsStore {
-  private _topics = signal<Topic[]>(this.load());
+  private http = inject(HttpClient);
+  private url = 'http://localhost:3000/topics';
+  private _topics = signal<Topic[]>([]);
 
   topics = this._topics.asReadonly();
   count = computed(() => this._topics().length);
 
   constructor() {
-    effect(() => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this._topics()));
-    });
+    this.http.get<Topic[]>(this.url).subscribe((topics) => this._topics.set(topics));
   }
 
   add(title: string, description: string) {
     if (!title.trim()) return;
-    const topic: Topic = {
+    const newTopic = {
       title: title.trim(),
       description: description.trim(),
       createdAt: Date.now(),
-      id: crypto.randomUUID(),
     };
-    this._topics.update((list) => [...list, topic]);
+    this.http
+      .post<Topic>(this.url, newTopic)
+      .subscribe((created) => this._topics.update((list) => [...list, created]));
   }
 
   update(id: string, patch: Partial<Topic>) {
-    this._topics.update((list) => list.map((t) => (t.id === id ? { ...t, ...patch } : t)));
+    this.http
+      .patch<Topic>(`${this.url}/${id}`, patch)
+      .subscribe((updated) =>
+        this._topics.update((list) => list.map((t) => (t.id === id ? { ...t, ...updated } : t))),
+      );
   }
 
   remove(id: string) {
-    this._topics.update((list) => list.filter((t) => t.id !== id));
-  }
-
-  private load(): Topic[] {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return [];
-    }
+    this.http
+      .delete<Topic>(`${this.url}/${id}`)
+      .subscribe(() => this._topics.update((list) => list.filter((t) => t.id !== id)));
   }
 }
