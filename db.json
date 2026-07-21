@@ -11,6 +11,18 @@
       "title": "RxJS",
       "description": "Observables, operators, and async streams",
       "createdAt": 1731000100000
+    },
+    {
+      "title": "ff",
+      "description": "dd",
+      "createdAt": 1784638145581,
+      "id": "02PSgfYik98"
+    },
+    {
+      "title": "fff",
+      "description": "fff",
+      "createdAt": 1784638186223,
+      "id": "EvDgJc4_-DQ"
     }
   ],
   "cards": [
@@ -19,7 +31,7 @@
       "topicId": "t1",
       "front": "What does computed() give you that a method doesn't?",
       "back": "Memoization + automatic dependency tracking; recomputes only when a dependency changes.",
-      "status": "known",
+      "status": "learning",
       "updatedAt": 1731000200000
     },
     {
