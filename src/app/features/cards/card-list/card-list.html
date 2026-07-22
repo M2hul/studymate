@@ -12,6 +12,12 @@
     Known&nbsp;{{ knownCount() }}
   </button>
 </div>
+<br />
+<input
+  [ngModel]="searchTerm()"
+  (ngModelChange)="searchTerm.set($event)"
+  placeholder="Search cards…"
+/>
 <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
   <div>
     <h2>Add New Card</h2>

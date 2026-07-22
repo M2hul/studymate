@@ -10,6 +10,8 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-card-list',
@@ -21,6 +23,7 @@ export class CardList {
   protected cardsStore = inject(CardsStore);
   protected topicsStore = inject(TopicsStore);
   private _filter = signal<Flashcard['status'] | 'all'>('all');
+  searchTerm = signal('');
 
   cardToEdit = signal<string>('');
   editingFront = signal<string>('');
@@ -40,12 +43,17 @@ export class CardList {
 
   filter = this._filter.asReadonly();
   filteredCards = computed(() => {
-    const selectedFilter = this.filter();
-    const cards = this.flashcards();
-    if (selectedFilter === 'all') {
-      return cards;
+    const status = this.filter();
+    const term = this.searchTerm().toLowerCase().trim();
+    let cards = this.flashcards();
+
+    if (status !== 'all') cards = cards.filter((c) => c.status === status);
+    if (term) {
+      cards = cards.filter(
+        (c) => c.front.toLowerCase().includes(term) || c.back.toLowerCase().includes(term),
+      );
     }
-    return cards.filter((i) => i.status === selectedFilter);
+    return cards;
   });
 
   cycleStatus(id: string) {
