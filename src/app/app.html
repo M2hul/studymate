@@ -1,8 +1,12 @@
 <h1>StudyMate</h1>
-<nav>
+@if (auth.isLoggedIn()) {
+  <button type="button" (click)="logoutClick()">Logout</button>
+  <nav>
     <ul>
-        <li><a routerLink="/topics">Topics</a></li>
-        <li><a routerLink="/cards">Cards</a></li>
+      <li><a routerLink="/topics">Topics</a></li>
+      <li><a routerLink="/cards">Cards</a></li>
     </ul>
-</nav>
+  </nav>
+}
+
 <router-outlet></router-outlet>
